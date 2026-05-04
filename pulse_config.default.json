@@ -1,0 +1,26 @@
+{
+  "enabled": true,
+  "theme": "cyan",
+  "language": "en",
+  "density": "compact",
+  "currency": "USD",
+  "notify_at_pct": 85,
+  "show": {
+    "model":          true,
+    "context_bar":    true,
+    "context_tokens": true,
+    "cache":          true,
+    "cost_session":   true,
+    "cost_today":     false,
+    "session_time":   true,
+    "lines_changed":  false,
+    "rate_limit_5h":  true,
+    "rate_limit_7d":  true,
+    "messages_today": true,
+    "messages_week":  false,
+    "last_compact":   true,
+    "peak_hour":      false,
+    "top_tool":       false,
+    "streak":         false
+  }
+}
