@@ -110,17 +110,18 @@ def _patch_settings():
     if "hooks" not in s:
         s["hooks"] = {}
 
-    entry = {"type": "command", "command": _hook_cmd(), "timeout": 10}
+    hook_entry = {"type": "command", "command": _hook_cmd(), "timeout": 10}
+    matcher_entry = {"matcher": "", "hooks": [hook_entry]}
 
     for event in HOOK_EVENTS:
         if event not in s["hooks"]:
             s["hooks"][event] = []
-        # Remove stale macm-pulse entries to avoid duplicates
         s["hooks"][event] = [
             h for h in s["hooks"][event]
             if "pulse_collector" not in str(h.get("command", ""))
+            and "pulse_collector" not in str(h.get("hooks", ""))
         ]
-        s["hooks"][event].append(entry)
+        s["hooks"][event].append(matcher_entry)
 
     _save_settings(s)
 
@@ -179,6 +180,7 @@ def _uninstall():
                 s["hooks"][event] = [
                     h for h in s["hooks"][event]
                     if "pulse_collector" not in str(h.get("command", ""))
+                    and "pulse_collector" not in str(h.get("hooks", ""))
                 ]
                 if len(s["hooks"][event]) < before:
                     changed = True

@@ -3,6 +3,8 @@
 **Real-time Claude Code status line monitor.**  
 Context %, rate limits, cost, compaction — all exact data from the Claude Code API, displayed in the bar below your input.
 
+> **Documentacion en Espanol:** [README.es.md](README.es.md)
+
 ```
  ◈ Sonnet 4.6  ████████████░░ 73%  146k/200k │ CACHE 39k │ COMPACT 23m ago │ 5H 28% (2h 14m) │ 7D 41% │ TODAY 14 │ ~$0.18
 ```
