@@ -288,15 +288,24 @@ grep -E "\beval\b|\bexec\b|__import__" ~/.claude/hooks/pulse_*.py
 
 ## Uninstall
 
+**One command — run from the cloned repo folder:**
+
 ```bash
 python install.py --uninstall
 ```
 
-Removes hook scripts, the CLI, the slash command, and cleans `settings.json`. Config and stats are preserved:
+Or via slash command inside Claude Code: `/hud-uninstall`
+
+That's it. It removes the hook scripts, the CLI, all slash command files, and cleans `settings.json`. A backup of `settings.json` is created before any change.
+
+Config and stats files are kept — delete them manually only if you want a full clean:
 
 ```bash
-# delete manually if no longer needed
-python -c "import pathlib; [p.unlink() for p in [pathlib.Path.home()/'.claude'/'macm_pulse_config.json', pathlib.Path.home()/'.claude'/'macm_pulse_stats.json'] if p.exists()]"
+# Windows
+python -c "import pathlib; [p.unlink(missing_ok=True) for p in [pathlib.Path.home()/'.claude'/'macm_pulse_config.json', pathlib.Path.home()/'.claude'/'macm_pulse_stats.json']]"
+
+# macOS / Linux
+rm ~/.claude/macm_pulse_config.json ~/.claude/macm_pulse_stats.json
 ```
 
 ---

@@ -8,6 +8,8 @@ NETWORK:    localhost only — binds 127.0.0.1, never external
 SUBPROCESS: none  |  eval/exec: none
 ──────────────────────────────────────────────────────────────────────
 """
+import sys
+import io
 import json
 import copy
 import socket
@@ -16,6 +18,9 @@ import webbrowser
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
+
+if hasattr(sys.stdout, "buffer"):
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
 
 HOME        = Path.home()
 CONFIG_PATH = HOME / ".claude" / "macm_pulse_config.json"
