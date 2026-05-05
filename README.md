@@ -19,7 +19,7 @@
 
 <br>
 
-[Install](#install) &nbsp;·&nbsp; [Themes](#themes) &nbsp;·&nbsp; [Configure](#configuration-ui) &nbsp;·&nbsp; [Skill commands](#skill-commands) &nbsp;·&nbsp; [Security](#security) &nbsp;·&nbsp; [Español](README.es.md)
+[Install](#install) &nbsp;·&nbsp; [Control](#controlling-macm-hud) &nbsp;·&nbsp; [Configure](#configuration-ui) &nbsp;·&nbsp; [Themes](#themes) &nbsp;·&nbsp; [Security](#security) &nbsp;·&nbsp; [Español](README.es.md)
 
 </div>
 
@@ -71,7 +71,100 @@ python install.py
 
 The installer copies the hooks to `~/.claude/hooks/`, patches `~/.claude/settings.json` (with a timestamped backup), and opens the configuration UI in your browser. The status line is active after your next Claude Code message.
 
-> **Windows users:** run `python install.py` directly from a terminal, not through Claude Code tools.
+> **Windows:** run `python install.py` from a terminal window, not through Claude Code tools.
+
+---
+
+## Controlling macm-hud
+
+There are three ways to control macm-hud. Choose whichever fits your workflow.
+
+---
+
+### Option 1 — Terminal (zero tokens, fastest)
+
+Run `hud.py` directly from any terminal. No Claude involved, no tokens consumed.
+
+**Windows:**
+```
+python %USERPROFILE%\.claude\hooks\hud.py
+python %USERPROFILE%\.claude\hooks\hud.py on
+python %USERPROFILE%\.claude\hooks\hud.py off
+python %USERPROFILE%\.claude\hooks\hud.py config
+python %USERPROFILE%\.claude\hooks\hud.py stats
+python %USERPROFILE%\.claude\hooks\hud.py reset
+```
+
+**macOS / Linux:**
+```bash
+python3 ~/.claude/hooks/hud.py
+python3 ~/.claude/hooks/hud.py on
+python3 ~/.claude/hooks/hud.py off
+python3 ~/.claude/hooks/hud.py config
+python3 ~/.claude/hooks/hud.py stats
+python3 ~/.claude/hooks/hud.py reset
+```
+
+---
+
+### Option 2 — Inside Claude Code with `!` prefix (zero tokens)
+
+Type `!` before the command in the Claude Code input box to run it directly without invoking Claude:
+
+```
+! python %USERPROFILE%\.claude\hooks\hud.py
+! python %USERPROFILE%\.claude\hooks\hud.py config
+! python %USERPROFILE%\.claude\hooks\hud.py stats
+```
+
+Same on macOS/Linux with `python3` and `~/.claude/hooks/hud.py`.
+
+---
+
+### Option 3 — `/hud` slash command (uses tokens)
+
+The `/hud` command is available inside Claude Code once the installer copies `hud.md` to `~/.claude/commands/`. Claude reads the file and executes the action — convenient but it uses a small amount of context.
+
+| Command | Action |
+|---|---|
+| `/hud` | Toggle status line on / off |
+| `/hud on` | Force enable |
+| `/hud off` | Force disable |
+| `/hud config` | Open configuration UI in browser |
+| `/hud stats` | Print usage summary to chat |
+| `/hud reset` | Clear stats (with confirmation) |
+
+> Tip: for frequent toggles, prefer Option 1 or 2 to keep your context clean.
+
+---
+
+## Configuration UI
+
+A local web interface on `127.0.0.1` — no data ever leaves your machine.
+
+**Open it:**
+
+```bash
+# Windows
+python %USERPROFILE%\.claude\hooks\hud.py config
+
+# macOS / Linux
+python3 ~/.claude/hooks/hud.py config
+
+# Or from inside Claude Code (zero tokens)
+! python %USERPROFILE%\.claude\hooks\hud.py config
+```
+
+| Setting | Options |
+|---|---|
+| **Theme** | Cyan · Green · Purple · Orange · Mono |
+| **Layout** | Compact (1 line) · Full (2 lines) |
+| **Language** | English · Spanish |
+| **Currency** | USD · EUR |
+| **Alert threshold** | Context % that turns the bar red (default: 85%) |
+| **Metrics** | Toggle each one with live preview |
+
+Save in the browser and the server closes automatically.
 
 ---
 
@@ -109,43 +202,6 @@ orange  │  ◈ Sonnet 4.6  ████████████░░ 73%  146
 
 ---
 
-## Configuration UI
-
-Runs as a local server on `127.0.0.1` — no data ever leaves your machine.
-
-```bash
-python ~/.claude/hooks/pulse_config_ui.py
-```
-
-Or via the skill: `/hud config`
-
-| Setting | Options |
-|---|---|
-| **Theme** | Cyan · Green · Purple · Orange · Mono |
-| **Layout** | Compact (1 line) · Full (2 lines) |
-| **Language** | English · Spanish |
-| **Currency** | USD · EUR |
-| **Alert threshold** | Context % that turns the bar red (default: 85%) |
-| **Metrics** | Toggle each one with live preview |
-
----
-
-## Skill commands
-
-Copy `SKILL.md` to `~/.claude/skills/macm-hud/SKILL.md` and restart Claude Code.
-
-| Command | Action |
-|---|---|
-| `/hud` | Toggle status line on / off |
-| `/hud on` | Force enable |
-| `/hud off` | Force disable (hooks keep collecting data) |
-| `/hud config` | Open configuration UI in browser |
-| `/hud stats` | Print usage summary to chat |
-| `/hud reset` | Clear stats (with confirmation) |
-| `/hud uninstall` | Remove macm-hud (with confirmation) |
-
----
-
 ## How it integrates with Claude Code
 
 macm-hud uses two native Claude Code extension points: `statusLine` and `hooks`.
@@ -177,7 +233,10 @@ After install, `~/.claude/settings.json` gains these entries:
 ├── hooks/
 │   ├── pulse_collector.py      hook processor   — writes cross-session stats
 │   ├── pulse_statusline.py     status renderer  — reads Claude Code stdin
-│   └── pulse_config_ui.py      config web UI    — local only, 127.0.0.1
+│   ├── pulse_config_ui.py      config web UI    — local only, 127.0.0.1
+│   └── hud.py                  CLI controller   — toggle/config/stats from terminal
+├── commands/
+│   └── hud.md                  /hud slash command definition
 ├── macm_pulse_config.json      your preferences
 └── macm_pulse_stats.json       usage counters   — auto-created on first run
 ```
@@ -203,7 +262,7 @@ Claude Code
          prints:  {"continue": true}
 ```
 
-The status line script runs after each response and does **not** consume API tokens — documented in the Claude Code official docs.
+The status line script runs after each response and does **not** consume API tokens.
 
 ---
 
@@ -233,11 +292,11 @@ grep -E "\beval\b|\bexec\b|__import__" ~/.claude/hooks/pulse_*.py
 python install.py --uninstall
 ```
 
-Removes hook scripts and cleans `settings.json`. Config and stats are preserved — delete manually if needed:
+Removes hook scripts, the CLI, the slash command, and cleans `settings.json`. Config and stats are preserved:
 
 ```bash
-rm ~/.claude/macm_pulse_config.json
-rm ~/.claude/macm_pulse_stats.json
+# delete manually if no longer needed
+python -c "import pathlib; [p.unlink() for p in [pathlib.Path.home()/'.claude'/'macm_pulse_config.json', pathlib.Path.home()/'.claude'/'macm_pulse_stats.json'] if p.exists()]"
 ```
 
 ---
@@ -249,14 +308,14 @@ rm ~/.claude/macm_pulse_stats.json
 
 **Status line not appearing**
 - Send one message — it activates after the first response.
-- Smoke test: `echo '{}' | python ~/.claude/hooks/pulse_statusline.py`
+- Smoke test: `python %USERPROFILE%\.claude\hooks\pulse_statusline.py` (Windows) or `echo '{}' | python3 ~/.claude/hooks/pulse_statusline.py` (macOS/Linux)
 - Check `disableAllHooks` is not `true` in your Claude Code settings.
 
 **All values show 0 or blank**
 - Fields from Claude Code are `null` before the first API call. Send one message.
 
 **Config UI does not open**
-- Run manually: `python ~/.claude/hooks/pulse_config_ui.py`
+- Run: `python %USERPROFILE%\.claude\hooks\hud.py config` (Windows) or `python3 ~/.claude/hooks/hud.py config`
 - Check Python is in PATH: `python --version`
 
 **Reinstall after update**
