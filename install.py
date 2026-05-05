@@ -224,9 +224,9 @@ def _install():
   in Claude Code.
 
   Commands (via skill):
-    {D}/pulse{RS}          — toggle on / off
-    {D}/pulse config{RS}   — open config UI
-    {D}/pulse stats{RS}    — show usage summary
+    {D}/hud{RS}            — toggle on / off
+    {D}/hud config{RS}     — open config UI
+    {D}/hud stats{RS}      — show usage summary
 
   Quick smoke test:
     {D}{_py()} {_norm(HOOKS_DIR/'pulse_statusline.py')} <<< '{{}}'
