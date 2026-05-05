@@ -85,14 +85,20 @@ There are three ways to control macm-hud. Choose whichever fits your workflow.
 
 Run `hud.py` directly from any terminal. No Claude involved, no tokens consumed.
 
-**Windows:**
+**Windows — PowerShell:**
+```powershell
+python $env:USERPROFILE\.claude\hooks\hud.py
+python $env:USERPROFILE\.claude\hooks\hud.py on
+python $env:USERPROFILE\.claude\hooks\hud.py off
+python $env:USERPROFILE\.claude\hooks\hud.py config
+python $env:USERPROFILE\.claude\hooks\hud.py stats
+python $env:USERPROFILE\.claude\hooks\hud.py reset
 ```
-python %USERPROFILE%\.claude\hooks\hud.py
-python %USERPROFILE%\.claude\hooks\hud.py on
-python %USERPROFILE%\.claude\hooks\hud.py off
+
+**Windows — CMD:**
+```
 python %USERPROFILE%\.claude\hooks\hud.py config
 python %USERPROFILE%\.claude\hooks\hud.py stats
-python %USERPROFILE%\.claude\hooks\hud.py reset
 ```
 
 **macOS / Linux:**
@@ -107,21 +113,7 @@ python3 ~/.claude/hooks/hud.py reset
 
 ---
 
-### Option 2 — Inside Claude Code with `!` prefix (zero tokens)
-
-Type `!` before the command in the Claude Code input box to run it directly without invoking Claude:
-
-```
-! python %USERPROFILE%\.claude\hooks\hud.py
-! python %USERPROFILE%\.claude\hooks\hud.py config
-! python %USERPROFILE%\.claude\hooks\hud.py stats
-```
-
-Same on macOS/Linux with `python3` and `~/.claude/hooks/hud.py`.
-
----
-
-### Option 3 — `/hud` slash command (uses tokens)
+### Option 2 — `/hud` slash commands (uses tokens)
 
 The `/hud` command is available inside Claude Code once the installer copies `hud.md` to `~/.claude/commands/`. Claude reads the file and executes the action — convenient but it uses a small amount of context.
 
@@ -144,15 +136,13 @@ A local web interface on `127.0.0.1` — no data ever leaves your machine.
 
 **Open it:**
 
+```powershell
+# Windows (PowerShell)
+python $env:USERPROFILE\.claude\hooks\hud.py config
+```
 ```bash
-# Windows
-python %USERPROFILE%\.claude\hooks\hud.py config
-
 # macOS / Linux
 python3 ~/.claude/hooks/hud.py config
-
-# Or from inside Claude Code (zero tokens)
-! python %USERPROFILE%\.claude\hooks\hud.py config
 ```
 
 | Setting | Options |
