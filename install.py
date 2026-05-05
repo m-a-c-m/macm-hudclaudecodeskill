@@ -137,10 +137,9 @@ def _copy_files():
         ok(f"Copied  {name}")
 
     COMMANDS_DIR.mkdir(parents=True, exist_ok=True)
-    cmd_src = REPO / "hud.md"
-    if cmd_src.exists():
-        shutil.copy2(cmd_src, COMMANDS_DIR / "hud.md")
-        ok(f"Copied  hud.md  → ~/.claude/commands/hud.md")
+    for cmd_file in (REPO / "commands").glob("*.md"):
+        shutil.copy2(cmd_file, COMMANDS_DIR / cmd_file.name)
+        ok(f"Copied  {cmd_file.name}  → ~/.claude/commands/")
 
 def _is_installed():
     return (HOOKS_DIR / "pulse_collector.py").exists() and \
@@ -173,10 +172,9 @@ def _uninstall():
             ok(f"Removed {name}")
             removed += 1
 
-    cmd_file = COMMANDS_DIR / "hud.md"
-    if cmd_file.exists():
+    for cmd_file in COMMANDS_DIR.glob("hud*.md"):
         cmd_file.unlink()
-        ok("Removed hud.md from ~/.claude/commands/")
+        ok(f"Removed {cmd_file.name} from ~/.claude/commands/")
         removed += 1
 
     s = _load_settings()
