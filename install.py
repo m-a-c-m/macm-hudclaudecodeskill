@@ -20,11 +20,12 @@ import platform
 from pathlib import Path
 from datetime import datetime
 
-HOME       = Path.home()
-CLAUDE_DIR = HOME / ".claude"
-HOOKS_DIR  = CLAUDE_DIR / "hooks"
-SETTINGS   = CLAUDE_DIR / "settings.json"
-CONFIG_DST = CLAUDE_DIR / "macm_pulse_config.json"
+HOME         = Path.home()
+CLAUDE_DIR   = HOME / ".claude"
+HOOKS_DIR    = CLAUDE_DIR / "hooks"
+COMMANDS_DIR = CLAUDE_DIR / "commands"
+SETTINGS     = CLAUDE_DIR / "settings.json"
+CONFIG_DST   = CLAUDE_DIR / "macm_pulse_config.json"
 
 REPO       = Path(__file__).parent
 SRC_FILES  = {
@@ -135,6 +136,12 @@ def _copy_files():
         shutil.copy2(src, dst)
         ok(f"Copied  {name}")
 
+    COMMANDS_DIR.mkdir(parents=True, exist_ok=True)
+    cmd_src = REPO / "hud.md"
+    if cmd_src.exists():
+        shutil.copy2(cmd_src, COMMANDS_DIR / "hud.md")
+        ok(f"Copied  hud.md  → ~/.claude/commands/hud.md")
+
 def _is_installed():
     return (HOOKS_DIR / "pulse_collector.py").exists() and \
            (HOOKS_DIR / "pulse_statusline.py").exists()
@@ -157,7 +164,7 @@ def _open_config_ui():
         warn(f"Configure manually: edit  {CONFIG_DST}")
 
 def _uninstall():
-    pr(f"\n{Y}Uninstalling macm-pulse...{RS}")
+    pr(f"\n{Y}Uninstalling macm-hud...{RS}")
     removed = 0
     for name in SRC_FILES:
         f = HOOKS_DIR / name
@@ -165,6 +172,12 @@ def _uninstall():
             f.unlink()
             ok(f"Removed {name}")
             removed += 1
+
+    cmd_file = COMMANDS_DIR / "hud.md"
+    if cmd_file.exists():
+        cmd_file.unlink()
+        ok("Removed hud.md from ~/.claude/commands/")
+        removed += 1
 
     s = _load_settings()
     changed = False
